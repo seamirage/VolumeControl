@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String UNSAFE_VOLUME_MUSIC_ACTIVE_MS = "unsafe_volume_music_active_ms";
 
     private ProgressBar progressCurrent;
+    private Button btnRefresh;
     private Button btnFlush;
     private TextView tvTotalPlayed;
     private TextView tvMaxDuration;
@@ -28,12 +29,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         progressCurrent = findViewById(R.id.progress_current);
+        btnRefresh = findViewById(R.id.btn_refresh);
         btnFlush = findViewById(R.id.btn_flush);
         tvTotalPlayed = findViewById(R.id.tv_total_played);
         tvMaxDuration = findViewById(R.id.tv_max_duration);
         tvMaxDuration.setText(durationToText(UNSAFE_VOLUME_MUSIC_ACTIVE_MS_MAX));
 
         updateProgressBar();
+
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateProgressBar();
+            }
+        });
 
         btnFlush.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -2,4 +2,5 @@
     <string name="app_name">VolumeControl</string>
     <string name="flush">Flush</string>
     <string name="total_played">Total played</string>
+    <string name="refresh">refresh</string>
 </resources>

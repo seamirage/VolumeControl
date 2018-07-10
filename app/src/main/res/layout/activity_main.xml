@@ -39,11 +39,23 @@
             android:layout_height="wrap_content" />
     </android.support.constraint.ConstraintLayout>
 
-    <Button
-        android:id="@+id/btn_flush"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/flush"/>
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/refresh"/>
+
+        <Button
+            android:id="@+id/btn_flush"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/flush"/>
+    </LinearLayout>
 
 </LinearLayout>
