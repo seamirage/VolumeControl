@@ -10,12 +10,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
+
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int UNSAFE_VOLUME_MUSIC_ACTIVE_MS_MAX = (20 * 3600 * 1000); // 20 hours
-    private static final String UNSAFE_VOLUME_MUSIC_ACTIVE_MS = "unsafe_volume_music_active_ms";
 
     private ProgressBar progressCurrent;
     private Button btnRefresh;
@@ -23,17 +27,21 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvTotalPlayed;
     private TextView tvMaxDuration;
 
+    private VolumeControlService volumeControlService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        volumeControlService = new VolumeControlService();
 
         progressCurrent = findViewById(R.id.progress_current);
         btnRefresh = findViewById(R.id.btn_refresh);
         btnFlush = findViewById(R.id.btn_flush);
         tvTotalPlayed = findViewById(R.id.tv_total_played);
         tvMaxDuration = findViewById(R.id.tv_max_duration);
-        tvMaxDuration.setText(durationToText(UNSAFE_VOLUME_MUSIC_ACTIVE_MS_MAX));
+        tvMaxDuration.setText(durationToText(volumeControlService.getMaxUnsafeMusicPlayDuration()));
 
         updateProgressBar();
 
@@ -47,31 +55,27 @@ public class MainActivity extends AppCompatActivity {
         btnFlush.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                putTotalUnsafeMilliseconds(1);
+                volumeControlService.putTotalUnsafeMilliseconds(MainActivity.this.getContentResolver(), 1);
                 updateProgressBar();
             }
         });
+
+        ReminderServiceScheduler reminderScheduler = new ReminderServiceScheduler(getApplicationContext(), 0.1);
+        //TODO: load hours from preferences
+        reminderScheduler.scheduleReminderService(8);
     }
 
     private void updateProgressBar() {
         try {
-            int currentState = getUnsafeMilliseconds();
+            int currentState = volumeControlService.getUnsafeMilliseconds(getContentResolver());
             tvTotalPlayed.setText(durationToText(currentState));
-            progressCurrent.setMax(UNSAFE_VOLUME_MUSIC_ACTIVE_MS_MAX);
+            progressCurrent.setMax(volumeControlService.getMaxUnsafeMusicPlayDuration());
             progressCurrent.setProgress(currentState);
 
         } catch (Settings.SettingNotFoundException e) {
             Log.e(TAG, "Could not load setting", e);
             Toast.makeText(this,"Could not load current value.", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private int getUnsafeMilliseconds() throws Settings.SettingNotFoundException {
-        return Settings.Secure.getInt(getContentResolver(), UNSAFE_VOLUME_MUSIC_ACTIVE_MS);
-    }
-
-    private void putTotalUnsafeMilliseconds(int value) {
-        Settings.Secure.putInt(getContentResolver(), UNSAFE_VOLUME_MUSIC_ACTIVE_MS, value);
     }
 
     private String durationToText(int duration) {

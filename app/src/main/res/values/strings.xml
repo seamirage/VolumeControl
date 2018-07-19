@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">VolumeControl</string>
+    <string name="app_name">Volume Control</string>
     <string name="flush">Flush</string>
     <string name="total_played">Total played</string>
     <string name="refresh">refresh</string>
+    <string name="flush_reminder_notification_hours_only">Less than %1$d hours left before warning message</string>
 </resources>
