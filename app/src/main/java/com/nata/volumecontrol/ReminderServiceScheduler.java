@@ -22,8 +22,8 @@ public class ReminderServiceScheduler {
     }
 
     public void scheduleReminderService(int periodHours) {
-        int checkValueTimeSecondsEarliest = (int)(periodHours * 60 *  (1 - allowedInaccuracy));
-        int checkValueTimeSecondsLatest = (int) (periodHours * 60 *  (1 + allowedInaccuracy));
+        int checkValueTimeSecondsEarliest = (int)(periodHours * 60 * 60 * (1 - allowedInaccuracy));
+        int checkValueTimeSecondsLatest = (int) (periodHours * 60 * 60 * (1 + allowedInaccuracy));
         Log.d(TAG, "earliest " + checkValueTimeSecondsEarliest);
         Log.d(TAG, "latest " + checkValueTimeSecondsLatest);
 

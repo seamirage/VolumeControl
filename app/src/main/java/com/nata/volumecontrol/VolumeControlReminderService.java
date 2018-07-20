@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class VolumeControlReminderService extends JobService {
     private static final String TAG = VolumeControlReminderService.class.getSimpleName();
     private static final String CHANNEL_ID = "volume_control_channel";
-    private static final int NOTIFICATION_ID = 346;
+    private static final int NOTIFICATION_ID = 1;
 
     private VolumeControlService volumeControlService;
 
@@ -35,7 +35,7 @@ public class VolumeControlReminderService extends JobService {
             int remainingMilliseconds = volumeControlService.getMaxUnsafeMusicPlayDuration() - unsafeMilliseconds;
             //Read from preferences
             int hours = 10;
-            int minDistance = hours *60 *60 *1000; // 10 hours
+            int minDistance = hours * 60 * 60 *1000; // 10 hours
 
             if (remainingMilliseconds <= minDistance) {
                 Log.d(TAG, "Min distance is reached, notification will be sent.");

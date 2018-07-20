@@ -3,5 +3,10 @@
     <string name="flush">Flush</string>
     <string name="total_played">Total played</string>
     <string name="refresh">refresh</string>
-    <string name="flush_reminder_notification_hours_only">Less than %1$d hours left before warning message</string>
+    <string name="flush_reminder_notification_hours_only">%1$d hours left before warning message</string>
+    <string name="menu_settings">Settings</string>
+    <string name="remind_switch">Notify when little time left </string>
+    <string name="setting_min_time_left_before_warning">Minimum time left before warning: </string>
+    <string name="setting_how_often_to_check">How often to check: every </string>
+    <string name="hours">hour(s)</string>
 </resources>
