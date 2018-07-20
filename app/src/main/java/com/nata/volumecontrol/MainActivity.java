@@ -14,11 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.Trigger;
+import com.nata.volumecontrol.reminder.ReminderServiceScheduler;
+import com.nata.volumecontrol.settings.SettingsActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -63,10 +60,6 @@ public class MainActivity extends AppCompatActivity {
                 updateProgressBar();
             }
         });
-
-        ReminderServiceScheduler reminderScheduler = new ReminderServiceScheduler(getApplicationContext(), 0.1);
-        //TODO: load hours from preferences
-        reminderScheduler.scheduleReminderService(8);
     }
 
     @Override

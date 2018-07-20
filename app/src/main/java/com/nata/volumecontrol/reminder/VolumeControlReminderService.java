@@ -1,4 +1,4 @@
-package com.nata.volumecontrol;
+package com.nata.volumecontrol.reminder;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,6 +10,11 @@ import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
+import com.nata.volumecontrol.R;
+import com.nata.volumecontrol.VolumeControlService;
+import com.nata.volumecontrol.settings.DefaultSettings;
+import com.nata.volumecontrol.settings.SettingsStorage;
+import com.nata.volumecontrol.settings.SharedPreferencesSettingsStorage;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,12 +24,15 @@ public class VolumeControlReminderService extends JobService {
     private static final int NOTIFICATION_ID = 1;
 
     private VolumeControlService volumeControlService;
-
+    private SettingsStorage settingsStorage;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        //TODO: DI
         volumeControlService = new VolumeControlService();
+        //TODO: DI
+        settingsStorage = new SharedPreferencesSettingsStorage(this);
     }
 
     @Override
@@ -33,11 +41,9 @@ public class VolumeControlReminderService extends JobService {
             Log.d(TAG, "Started reminder check.");
             int unsafeMilliseconds = volumeControlService.getUnsafeMilliseconds(getContentResolver());
             int remainingMilliseconds = volumeControlService.getMaxUnsafeMusicPlayDuration() - unsafeMilliseconds;
-            //Read from preferences
-            int hours = 10;
-            int minDistance = hours * 60 * 60 *1000; // 10 hours
+            int millisecondsBeforeWarningSetting = getMillisecondsBeforeWarning();
 
-            if (remainingMilliseconds <= minDistance) {
+            if (remainingMilliseconds <= millisecondsBeforeWarningSetting) {
                 Log.d(TAG, "Min distance is reached, notification will be sent.");
                 showNotification(TimeUnit.MILLISECONDS.toHours(remainingMilliseconds));
             }
@@ -55,6 +61,7 @@ public class VolumeControlReminderService extends JobService {
     }
 
     //TODO: extract interface, e.g. NotificationService
+
     private void showNotification(long hoursLeft) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.icon_warning)
@@ -65,7 +72,6 @@ public class VolumeControlReminderService extends JobService {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
-
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -78,5 +84,10 @@ public class VolumeControlReminderService extends JobService {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    private int getMillisecondsBeforeWarning() {
+        int hoursBeforeWarning = settingsStorage.getMinTimeBeforeWarningInHours(DefaultSettings.MIN_TIME_BEFORE_WARNING_HOURS);
+        return hoursBeforeWarning * 60 * 60 * 1000;
     }
 }

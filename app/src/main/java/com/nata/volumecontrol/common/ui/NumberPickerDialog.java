@@ -18,7 +18,7 @@ public class NumberPickerDialog {
         void onNumberSelected(int selectedNumber);
     }
 
-    public NumberPickerDialog(Context context, int minValue, int maxValue, final OnNumberSelectedListener onNumberSelectedListener) {
+    public NumberPickerDialog(Context context, int minValue, int maxValue, int currentValue, final OnNumberSelectedListener onNumberSelectedListener) {
         this.context = context;
         this.minValue = minValue;
         this.maxValue = maxValue;
@@ -27,6 +27,7 @@ public class NumberPickerDialog {
         final NumberPicker picker = new NumberPicker(context);
         picker.setMinValue(minValue);
         picker.setMaxValue(maxValue);
+        picker.setValue(currentValue);
 
         final FrameLayout layout = new FrameLayout(context);
         layout.addView(picker, new FrameLayout.LayoutParams(

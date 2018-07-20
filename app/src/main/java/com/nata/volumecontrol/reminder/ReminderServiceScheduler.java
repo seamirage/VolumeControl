@@ -1,4 +1,4 @@
-package com.nata.volumecontrol;
+package com.nata.volumecontrol.reminder;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,6 +8,9 @@ import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
+import com.nata.volumecontrol.settings.DefaultSettings;
+import com.nata.volumecontrol.settings.SettingsStorage;
+import com.nata.volumecontrol.settings.SharedPreferencesSettingsStorage;
 
 public class ReminderServiceScheduler {
     private static final String REMINDER_SERVICE_TAG = "volume_control_reminder_service";
@@ -15,13 +18,18 @@ public class ReminderServiceScheduler {
 
     private double allowedInaccuracy;
     private FirebaseJobDispatcher dispatcher;
+    private SettingsStorage settingsStorage;
 
     public ReminderServiceScheduler(Context context, double allowedTimePercent) {
         this.allowedInaccuracy = allowedTimePercent;
+        //TODO: DI
         dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+        //TODO: DI
+        settingsStorage = new SharedPreferencesSettingsStorage(context);
     }
 
-    public void scheduleReminderService(int periodHours) {
+    public void scheduleReminderService() {
+        int periodHours = settingsStorage.getHowOftenToCheckInHours(DefaultSettings.HOW_OFTEN_TO_CHECK_HOURS);
         int checkValueTimeSecondsEarliest = (int)(periodHours * 60 * 60 * (1 - allowedInaccuracy));
         int checkValueTimeSecondsLatest = (int) (periodHours * 60 * 60 * (1 + allowedInaccuracy));
         Log.d(TAG, "earliest " + checkValueTimeSecondsEarliest);
@@ -37,5 +45,9 @@ public class ReminderServiceScheduler {
                 .build();
 
         dispatcher.mustSchedule(reminderJob);
+    }
+
+    public void cancelReminding() {
+        dispatcher.cancel(REMINDER_SERVICE_TAG);
     }
 }
