@@ -2,6 +2,9 @@ package com.nata.volumecontrol.reminder;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
@@ -10,6 +13,7 @@ import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
+import com.nata.volumecontrol.MainActivity;
 import com.nata.volumecontrol.R;
 import com.nata.volumecontrol.VolumeControlService;
 import com.nata.volumecontrol.settings.DefaultSettings;
@@ -67,11 +71,26 @@ public class VolumeControlReminderService extends JobService {
                 .setSmallIcon(R.drawable.icon_warning)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.flush_reminder_notification_hours_only, hoursLeft))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .setContentIntent(makeOpenAppIntent(this));
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
+
+    private PendingIntent makeOpenAppIntent(Context context) {
+        Intent startMainActivityIntent = new Intent(context, MainActivity.class);
+        startMainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        return PendingIntent.getActivity(
+                context,
+                0,
+                startMainActivityIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+    }
+
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library

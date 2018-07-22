@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.nata.volumecontrol.R;
 import com.nata.volumecontrol.common.ui.NumberPickerDialog;
 import com.nata.volumecontrol.reminder.ReminderServiceScheduler;
+import com.nata.volumecontrol.reminder.VolumeControlReminderService;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -39,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         //TODO: DI, Singleton (?)
-        reminderScheduler = new ReminderServiceScheduler(getApplicationContext(), 0.1);
+        reminderScheduler = new ReminderServiceScheduler(this, 0.1);
 
         //TODO: DI
         settingsStorage = new SharedPreferencesSettingsStorage(this);
@@ -60,6 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onNumberSelected(int selectedNumber) {
                 settingsStorage.putMinTimeBeforeWarningInHours(selectedNumber);
+                timeBeforeWarn.setText(String.valueOf(selectedNumber));
             }
         }));
 
@@ -70,6 +72,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onNumberSelected(int selectedNumber) {
                 settingsStorage.putHowOftenToCheckInHours(selectedNumber);
+                howOftenSetting.setText(String.valueOf(selectedNumber));
+                reminderScheduler.scheduleReminderService();
             }
         }));
     }

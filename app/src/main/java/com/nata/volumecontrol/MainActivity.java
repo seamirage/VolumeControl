@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nata.volumecontrol.reminder.ReminderServiceScheduler;
 import com.nata.volumecontrol.settings.SettingsActivity;
 
 import java.util.concurrent.TimeUnit;
