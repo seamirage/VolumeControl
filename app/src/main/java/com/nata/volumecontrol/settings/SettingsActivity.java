@@ -11,12 +11,10 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nata.volumecontrol.R;
 import com.nata.volumecontrol.common.ui.NumberPickerDialog;
 import com.nata.volumecontrol.reminder.ReminderServiceScheduler;
-import com.nata.volumecontrol.reminder.VolumeControlReminderService;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -57,25 +55,41 @@ public class SettingsActivity extends AppCompatActivity {
         timeBeforeWarn = findViewById(R.id.tv_settings_min_time_before_warn);
         minTimeBeforeWarningInHours = settingsStorage.getMinTimeBeforeWarningInHours(DefaultSettings.MIN_TIME_BEFORE_WARNING_HOURS);
         timeBeforeWarn.setText(String.valueOf(minTimeBeforeWarningInHours));
-        timeBeforeWarn.setOnClickListener(new ChooseNumberClickListener(1, 19, minTimeBeforeWarningInHours, new NumberPickerDialog.OnNumberSelectedListener() {
-            @Override
-            public void onNumberSelected(int selectedNumber) {
-                settingsStorage.putMinTimeBeforeWarningInHours(selectedNumber);
-                timeBeforeWarn.setText(String.valueOf(selectedNumber));
-            }
-        }));
+        timeBeforeWarn.setOnClickListener(new ChooseNumberClickListener(
+                1,
+                19,
+                new CurrentValueProvider() {
+                    @Override
+                    public int getCurrent() {
+                        return settingsStorage.getMinTimeBeforeWarningInHours(DefaultSettings.MIN_TIME_BEFORE_WARNING_HOURS);
+                    }
+            }, new NumberPickerDialog.OnNumberSelectedListener() {
+                @Override
+                public void onNumberSelected(int selectedNumber) {
+                    settingsStorage.putMinTimeBeforeWarningInHours(selectedNumber);
+                    timeBeforeWarn.setText(String.valueOf(selectedNumber));
+                }
+            }));
 
         howOftenSetting = findViewById(R.id.tv_settings_how_often_to_check);
         howOftenToCheckInHours = settingsStorage.getHowOftenToCheckInHours(DefaultSettings.HOW_OFTEN_TO_CHECK_HOURS);
         howOftenSetting.setText(String.valueOf(howOftenToCheckInHours));
-        howOftenSetting.setOnClickListener(new ChooseNumberClickListener(1, 24, howOftenToCheckInHours, new NumberPickerDialog.OnNumberSelectedListener() {
-            @Override
-            public void onNumberSelected(int selectedNumber) {
-                settingsStorage.putHowOftenToCheckInHours(selectedNumber);
-                howOftenSetting.setText(String.valueOf(selectedNumber));
-                reminderScheduler.scheduleReminderService();
-            }
-        }));
+        howOftenSetting.setOnClickListener(new ChooseNumberClickListener(
+                1,
+                24,
+                new CurrentValueProvider() {
+                    @Override
+                    public int getCurrent() {
+                        return settingsStorage.getHowOftenToCheckInHours(DefaultSettings.HOW_OFTEN_TO_CHECK_HOURS);
+                    }
+            }, new NumberPickerDialog.OnNumberSelectedListener() {
+                @Override
+                public void onNumberSelected(int selectedNumber) {
+                    settingsStorage.putHowOftenToCheckInHours(selectedNumber);
+                    howOftenSetting.setText(String.valueOf(selectedNumber));
+                    reminderScheduler.scheduleReminderService();
+                }
+            }));
     }
 
     private CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
@@ -97,20 +111,24 @@ public class SettingsActivity extends AppCompatActivity {
     private class ChooseNumberClickListener implements View.OnClickListener {
         private int minValue;
         private int maxValue;
-        private int currentValue;
+        private CurrentValueProvider currentValueProvider;
         private NumberPickerDialog.OnNumberSelectedListener onNumberSelectedListener;
 
-        private ChooseNumberClickListener(int minValue, int maxValue, int currentValue, NumberPickerDialog.OnNumberSelectedListener onNumberSelectedListener) {
+        private ChooseNumberClickListener(int minValue, int maxValue, CurrentValueProvider currentValueProvider, NumberPickerDialog.OnNumberSelectedListener onNumberSelectedListener) {
             this.minValue = minValue;
             this.maxValue = maxValue;
-            this.currentValue = currentValue;
+            this.currentValueProvider = currentValueProvider;
             this.onNumberSelectedListener = onNumberSelectedListener;
         }
 
         @Override
         public void onClick(View v) {
-            NumberPickerDialog numberPickerDialog = new NumberPickerDialog(SettingsActivity.this, minValue, maxValue, currentValue, onNumberSelectedListener);
+            NumberPickerDialog numberPickerDialog = new NumberPickerDialog(SettingsActivity.this, minValue, maxValue, currentValueProvider.getCurrent(), onNumberSelectedListener);
             numberPickerDialog.show();
         }
+    }
+
+    interface CurrentValueProvider {
+        int getCurrent();
     }
 }
