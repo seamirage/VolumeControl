@@ -9,4 +9,5 @@
     <string name="setting_min_time_left_before_warning">Minimum time left before warning: </string>
     <string name="setting_how_often_to_check">How often to check: every </string>
     <string name="hours">hour(s)</string>
+    <string name="main_notification_channel_name">Primary</string>
 </resources>

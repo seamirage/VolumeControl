@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
@@ -24,8 +23,9 @@ import java.util.concurrent.TimeUnit;
 
 public class VolumeControlReminderService extends JobService {
     private static final String TAG = VolumeControlReminderService.class.getSimpleName();
-    private static final String CHANNEL_ID = "volume_control_channel";
-    private static final int NOTIFICATION_ID = 1;
+    private static final int VOLUME_CONTROL_NOTIFICATION_ID = 4687;
+    private static final int VOLUME_CONTROL_PENDING_INTENT_ID = 3574;
+    private static final String VOLUME_CONTROL_NOTIFICATION_CHANNEL_ID = "volume_control_reminder_channel";
 
     private VolumeControlService volumeControlService;
     private SettingsStorage settingsStorage;
@@ -65,18 +65,28 @@ public class VolumeControlReminderService extends JobService {
     }
 
     //TODO: extract interface, e.g. NotificationService
-
     private void showNotification(long hoursLeft) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    VOLUME_CONTROL_NOTIFICATION_CHANNEL_ID,
+                    getString(R.string.main_notification_channel_name),
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, VOLUME_CONTROL_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.icon_warning)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.flush_reminder_notification_hours_only, hoursLeft))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
-                .setContentIntent(makeOpenAppIntent(this));
+                .setContentIntent(makeOpenAppIntent(this))
+                .setChannelId(VOLUME_CONTROL_NOTIFICATION_CHANNEL_ID);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        notificationManager.notify(VOLUME_CONTROL_NOTIFICATION_ID, mBuilder.build());
     }
 
     private PendingIntent makeOpenAppIntent(Context context) {
@@ -85,24 +95,10 @@ public class VolumeControlReminderService extends JobService {
 
         return PendingIntent.getActivity(
                 context,
-                0,
+                VOLUME_CONTROL_PENDING_INTENT_ID,
                 startMainActivityIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
-    }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "volume_control_channel";
-            String description = "volume_control_channel_description";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
     }
 
     private int getMillisecondsBeforeWarning() {
