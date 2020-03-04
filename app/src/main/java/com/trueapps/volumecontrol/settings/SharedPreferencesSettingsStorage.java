@@ -1,4 +1,4 @@
-package com.nata.volumecontrol.settings;
+package com.trueapps.volumecontrol.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;

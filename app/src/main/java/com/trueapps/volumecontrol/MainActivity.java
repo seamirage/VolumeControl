@@ -1,6 +1,8 @@
-package com.nata.volumecontrol;
+package com.trueapps.volumecontrol;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nata.volumecontrol.settings.SettingsActivity;
+import com.trueapps.volumecontrol.settings.SettingsActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         volumeControlService = new VolumeControlService();
 
         progressCurrent = findViewById(R.id.progress_current);

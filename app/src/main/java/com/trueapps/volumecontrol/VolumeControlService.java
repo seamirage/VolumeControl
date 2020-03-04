@@ -1,4 +1,4 @@
-package com.nata.volumecontrol;
+package com.trueapps.volumecontrol;
 
 import android.content.ContentResolver;
 import android.provider.Settings;

@@ -1,10 +1,11 @@
-package com.nata.volumecontrol.reminder;
+package com.trueapps.volumecontrol.reminder;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
@@ -12,12 +13,12 @@ import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
-import com.nata.volumecontrol.MainActivity;
-import com.nata.volumecontrol.R;
-import com.nata.volumecontrol.VolumeControlService;
-import com.nata.volumecontrol.settings.DefaultSettings;
-import com.nata.volumecontrol.settings.SettingsStorage;
-import com.nata.volumecontrol.settings.SharedPreferencesSettingsStorage;
+import com.trueapps.volumecontrol.MainActivity;
+import com.trueapps.volumecontrol.R;
+import com.trueapps.volumecontrol.VolumeControlService;
+import com.trueapps.volumecontrol.settings.DefaultSettings;
+import com.trueapps.volumecontrol.settings.SettingsStorage;
+import com.trueapps.volumecontrol.settings.SharedPreferencesSettingsStorage;
 
 import java.util.concurrent.TimeUnit;
 

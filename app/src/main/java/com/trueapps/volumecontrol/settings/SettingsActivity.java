@@ -1,4 +1,4 @@
-package com.nata.volumecontrol.settings;
+package com.trueapps.volumecontrol.settings;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.nata.volumecontrol.R;
-import com.nata.volumecontrol.common.ui.NumberPickerDialog;
-import com.nata.volumecontrol.reminder.ReminderServiceScheduler;
+import com.trueapps.volumecontrol.R;
+import com.trueapps.volumecontrol.common.ui.NumberPickerDialog;
+import com.trueapps.volumecontrol.reminder.ReminderServiceScheduler;
 
 public class SettingsActivity extends AppCompatActivity {
 

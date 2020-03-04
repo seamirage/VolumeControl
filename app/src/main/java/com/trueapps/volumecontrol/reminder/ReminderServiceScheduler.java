@@ -1,4 +1,4 @@
-package com.nata.volumecontrol.reminder;
+package com.trueapps.volumecontrol.reminder;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,9 +8,9 @@ import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
-import com.nata.volumecontrol.settings.DefaultSettings;
-import com.nata.volumecontrol.settings.SettingsStorage;
-import com.nata.volumecontrol.settings.SharedPreferencesSettingsStorage;
+import com.trueapps.volumecontrol.settings.DefaultSettings;
+import com.trueapps.volumecontrol.settings.SettingsStorage;
+import com.trueapps.volumecontrol.settings.SharedPreferencesSettingsStorage;
 
 public class ReminderServiceScheduler {
     private static final String REMINDER_SERVICE_TAG = "volume_control_reminder_service";

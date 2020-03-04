@@ -1,4 +1,4 @@
-package com.nata.volumecontrol.settings;
+package com.trueapps.volumecontrol.settings;
 
 public class DefaultSettings {
     public static final int MIN_TIME_BEFORE_WARNING_HOURS = 3;

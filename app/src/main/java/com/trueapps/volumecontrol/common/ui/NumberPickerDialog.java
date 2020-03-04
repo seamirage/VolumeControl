@@ -1,4 +1,4 @@
-package com.nata.volumecontrol.common.ui;
+package com.trueapps.volumecontrol.common.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
