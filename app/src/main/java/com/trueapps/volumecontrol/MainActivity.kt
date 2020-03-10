@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         updateProgressBar()
         btnRefresh.setOnClickListener { updateProgressBar() }
         btnFlush.setOnClickListener {
-            volumeControlService.putTotalUnsafeMilliseconds(this@MainActivity.contentResolver, 1)
+            volumeControlService.updateTotalUnsafeMilliseconds(this@MainActivity.contentResolver, 1)
             updateProgressBar()
         }
     }
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateProgressBar() {
         try {
-            val currentState = volumeControlService.getUnsafeMilliseconds(contentResolver)
+            val currentState = volumeControlService.readUnsafeMilliseconds(contentResolver)
             tvTotalPlayed.text = durationToText(currentState)
             progressCurrent.max = volumeControlService.unsafeVolumeMusicActiveMsMax
             progressCurrent.progress = currentState

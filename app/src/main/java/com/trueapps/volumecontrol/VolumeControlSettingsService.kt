@@ -9,11 +9,11 @@ class VolumeControlSettingsService {
     val unsafeVolumeMusicActiveMsMax = UNSAFE_VOLUME_MUSIC_ACTIVE_MS_MAX
 
     @Throws(SettingNotFoundException::class)
-    fun getUnsafeMilliseconds(contentResolver: ContentResolver?): Int {
+    fun readUnsafeMilliseconds(contentResolver: ContentResolver?): Int {
         return Settings.Secure.getInt(contentResolver, UNSAFE_VOLUME_MUSIC_ACTIVE_MS_SETTING_NAME)
     }
 
-    fun putTotalUnsafeMilliseconds(contentResolver: ContentResolver?, value: Int) {
+    fun updateTotalUnsafeMilliseconds(contentResolver: ContentResolver?, value: Int) {
         Settings.Secure.putInt(contentResolver, UNSAFE_VOLUME_MUSIC_ACTIVE_MS_SETTING_NAME, value)
     }
 

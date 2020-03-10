@@ -18,9 +18,9 @@ import com.trueapps.volumecontrol.settings.SettingsStorage
 import com.trueapps.volumecontrol.settings.SharedPreferencesSettingsStorage
 import java.util.concurrent.TimeUnit
 
-class VolumeControlNotificationsService : JobService() {
-    private var volumeControlService: VolumeControlSettingsService? = null
-    private var settingsStorage: SettingsStorage? = null
+class NotificationsService : JobService() {
+    private lateinit var volumeControlService: VolumeControlSettingsService
+    private lateinit var settingsStorage: SettingsStorage
     override fun onCreate() {
         super.onCreate()
         //TODO: DI
@@ -32,9 +32,9 @@ class VolumeControlNotificationsService : JobService() {
     override fun onStartJob(job: JobParameters): Boolean {
         try {
             Log.d(TAG, "Started reminder check.")
-            val unsafeMilliseconds = volumeControlService!!.getUnsafeMilliseconds(contentResolver)
-            val remainingMilliseconds = volumeControlService!!.unsafeVolumeMusicActiveMsMax - unsafeMilliseconds
-            val millisecondsBeforeWarningSetting = millisecondsBeforeWarning
+            val unsafeMilliseconds = volumeControlService.readUnsafeMilliseconds(contentResolver)
+            val remainingMilliseconds = volumeControlService.unsafeVolumeMusicActiveMsMax - unsafeMilliseconds
+            val millisecondsBeforeWarningSetting = millisecondsBeforeWarning()
             if (remainingMilliseconds <= millisecondsBeforeWarningSetting) {
                 Log.d(TAG, "Min distance is reached, notification will be sent.")
                 showNotification(TimeUnit.MILLISECONDS.toHours(remainingMilliseconds.toLong()))
@@ -49,7 +49,6 @@ class VolumeControlNotificationsService : JobService() {
         return false
     }
 
-    //TODO: extract interface, e.g. NotificationService
     private fun showNotification(hoursLeft: Long) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -82,15 +81,13 @@ class VolumeControlNotificationsService : JobService() {
         )
     }
 
-    private val millisecondsBeforeWarning: Int
-        private get() {
-            //TODO: 3 = DefaultSettings.MIN_TIME_BEFORE_WARNING_HOURS
-            val hoursBeforeWarning = settingsStorage!!.getMinTimeBeforeWarningInHours(3)
+    private fun millisecondsBeforeWarning(): Int {
+            val hoursBeforeWarning = settingsStorage.minTimeBeforeWarningInHours
             return hoursBeforeWarning * 60 * 60 * 1000
         }
 
     companion object {
-        private val TAG = VolumeControlNotificationsService::class.java.simpleName
+        private val TAG = NotificationsService::class.java.simpleName
         private const val VOLUME_CONTROL_NOTIFICATION_ID = 4687
         private const val VOLUME_CONTROL_PENDING_INTENT_ID = 3574
         private const val VOLUME_CONTROL_NOTIFICATION_CHANNEL_ID = "volume_control_reminder_channel"

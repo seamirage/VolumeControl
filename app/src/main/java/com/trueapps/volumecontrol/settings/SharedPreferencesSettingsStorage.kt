@@ -10,17 +10,25 @@ class SharedPreferencesSettingsStorage(private val context: Context) : SettingsS
         sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    override fun getMinTimeBeforeWarningInHours(defaultValue: Int): Int {
-        return sharedPreferences.getInt(context.getString(R.string.prefs_hours_left_before_warning_key), defaultValue)
+    override val minTimeBeforeWarningInHours: Int
+    get() {
+        return sharedPreferences.getInt(
+                context.getString(R.string.prefs_hours_left_before_warning_key),
+                HOURS_BEFORE_WARNING_DEFAULT_VALUE
+        )
     }
 
-    override fun notificationsEnabled(): Boolean {
-        return sharedPreferences.getBoolean(SHOW_NOTIFICATIONS, false)
+    override val showNotifications: Boolean
+    get() {
+        return sharedPreferences.getBoolean(
+                context.getString(R.string.prefs_show_notifications_key),
+                SHOW_NOTIFICATIONS_DEFAULT_VALUE
+        )
     }
 
     companion object {
         private const val SHARED_PREF_NAME = "volume_control_settings"
-        private const val SHOW_NOTIFICATIONS = "show_notifications"
-
+        private const val SHOW_NOTIFICATIONS_DEFAULT_VALUE = true
+        private const val HOURS_BEFORE_WARNING_DEFAULT_VALUE = 3
     }
 }

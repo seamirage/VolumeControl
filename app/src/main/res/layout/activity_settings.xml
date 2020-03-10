@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="com.trueapps.volumecontrol.settings.SettingsFragment"
+    android:id="@+id/weather_settings_fragment"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
-
-    <Switch
-        android:id="@+id/switch_reminder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:switchPadding="10dp"
-        android:padding="10dp"
-        android:text="@string/remind_switch" />
-
-    <ViewStub
-        android:id="@+id/view_stub_reminder_settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout="@layout/view_stub_reminder_settings"/>
-
-</LinearLayout>
+    android:layout_height="match_parent" />
