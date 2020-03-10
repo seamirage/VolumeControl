@@ -10,4 +10,10 @@
     <string name="setting_how_often_to_check">How often to check: every </string>
     <string name="hours">hour(s)</string>
     <string name="main_notification_channel_name">Primary</string>
+
+    <!-- - - - - - - - - - - - - - - - -
+      - Used by Preferences   -
+      - - - - - - - - - - - - - - - - -->
+    <string name="prefs_hours_left_before_warning_title">Hours left before warning</string>
+    <string name="prefs_hours_left_before_warning_key">hours_left_before_warning</string>
 </resources>
