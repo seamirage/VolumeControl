@@ -2,35 +2,36 @@ package com.trueapps.volumecontrol.notifications
 
 import android.content.Context
 import android.util.Log
-import com.firebase.jobdispatcher.FirebaseJobDispatcher
-import com.firebase.jobdispatcher.GooglePlayDriver
-import com.firebase.jobdispatcher.Lifetime
-import com.firebase.jobdispatcher.Trigger
+import androidx.work.Constraints
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import java.util.concurrent.TimeUnit
 
-class NotificationsScheduler(context: Context, private val flextimePercent: Double) {
-    //TODO: DI
-    private val dispatcher: FirebaseJobDispatcher = FirebaseJobDispatcher(GooglePlayDriver(context))
+class NotificationsScheduler(private val context: Context) {
 
     fun enableNotifications() {
-        //TODO:
-        val periodHours = 8
-        val checkValueTimeSecondsEarliest = (periodHours * 60 * 60 * (1 - flextimePercent)).toInt()
-        val checkValueTimeSecondsLatest = (periodHours * 60 * 60 * (1 + flextimePercent)).toInt()
-        Log.d(TAG, "earliest $checkValueTimeSecondsEarliest")
-        Log.d(TAG, "latest $checkValueTimeSecondsLatest")
-        val reminderJob = dispatcher.newJobBuilder()
-                .setService(NotificationsService::class.java)
-                .setTag(REMINDER_SERVICE_TAG)
-                .setReplaceCurrent(true)
-                .setRecurring(true)
-                .setTrigger(Trigger.executionWindow(checkValueTimeSecondsEarliest, checkValueTimeSecondsLatest))
-                .setLifetime(Lifetime.FOREVER)
+        //TODO: min value
+        val periodHours:Long = 2
+
+        val constraints = Constraints.Builder()
+                .setRequiresCharging(true)
                 .build()
-        dispatcher.mustSchedule(reminderJob)
+
+        //TODO: !!!
+        //val request = PeriodicWorkRequestBuilder<NotificationsWorker>(periodHours, TimeUnit.HOURS)
+        val request = PeriodicWorkRequestBuilder<NotificationsWorker>(15, TimeUnit.MINUTES)
+                .addTag(REMINDER_SERVICE_TAG)
+                .setConstraints(constraints)
+                .build()
+
+        WorkManager.getInstance(context).enqueue(request)
+        Log.d(TAG, "Notifications are enabled")
     }
 
     fun disableNotifications() {
-        dispatcher.cancel(REMINDER_SERVICE_TAG)
+        WorkManager.getInstance(context)
+                .cancelAllWorkByTag(REMINDER_SERVICE_TAG)
+        Log.d(TAG, "Notifications are disabled")
     }
 
     companion object {

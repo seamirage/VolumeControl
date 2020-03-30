@@ -1,6 +1,5 @@
 package com.trueapps.volumecontrol.settings
 
-import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
@@ -9,6 +8,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.trueapps.volumecontrol.R
+import com.trueapps.volumecontrol.VolumeControlApplication
 import com.trueapps.volumecontrol.common.preferences.NumberPickerPreference
 import com.trueapps.volumecontrol.common.preferences.NumberPickerPreferenceDialogFragmentCompat
 import com.trueapps.volumecontrol.notifications.NotificationsScheduler
@@ -23,10 +23,9 @@ class SettingsFragment
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        notificationsService = NotificationsScheduler(context, 0.1)
+        notificationsService = VolumeControlApplication.Instance.dependenciesProvider.notificationsScheduler
     }
 
-    //TODO: DI, config
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs)
     }
@@ -45,8 +44,13 @@ class SettingsFragment
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
         var dialogFragment: DialogFragment? = null
+
         if (preference is NumberPickerPreference) {
-            dialogFragment = NumberPickerPreferenceDialogFragmentCompat.newInstance(preference.key, preference.minPreferenceValue, preference.maxPreferenceValue)
+            dialogFragment = NumberPickerPreferenceDialogFragmentCompat.newInstance(
+                    preference.key,
+                    preference.minPreferenceValue,
+                    preference.maxPreferenceValue
+            )
         }
 
         if (dialogFragment != null) {
@@ -62,9 +66,7 @@ class SettingsFragment
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val notificationPrefKey = getString(R.string.prefs_show_notifications_key)
         if (key == notificationPrefKey) {
-            sharedPreferences.getBoolean(notificationPrefKey, false).let { isEnabled ->
-                setNotificationSettingsEnabled(isEnabled)
-            }
+            setNotificationSettingsEnabled(sharedPreferences.getBoolean(notificationPrefKey, false))
         }
     }
 

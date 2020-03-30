@@ -18,4 +18,5 @@
     <string name="prefs_hours_left_before_warning_key">hours_left_before_warning</string>
     <string name="prefs_show_notifications_title">Show notifications</string>
     <string name="prefs_show_notifications_key">show_notifications</string>
+    <string name="notifications_channel_main">volume_control_reminder_channel</string>
 </resources>

@@ -15,6 +15,6 @@
         android:key="@string/prefs_hours_left_before_warning_key"
         android:title="@string/prefs_hours_left_before_warning_title"
         android:defaultValue="@integer/prefs_hours_before_warning_default_value"
-        volumecontrol:min_value="1"
+        volumecontrol:min_value="2"
         volumecontrol:max_value="19"/>
 </PreferenceScreen>
