@@ -61,7 +61,7 @@ class NotificationsWorker(private val appContext: Context, workerParams: WorkerP
         return NotificationCompat.Builder(appContext, VOLUME_CONTROL_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.icon_warning)
                 .setContentTitle(appContext.getString(R.string.app_name))
-                .setContentText(appContext.getString(R.string.flush_reminder_notification_hours_only, hoursLeft))
+                .setContentText(appContext.getString(R.string.notification_message, hoursLeft))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
                 .setContentIntent(makeOpenAppIntent(appContext))

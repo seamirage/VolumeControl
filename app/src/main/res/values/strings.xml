@@ -1,15 +1,17 @@
 <resources>
     <string name="app_name">Volume Control</string>
-    <string name="flush">Flush</string>
-    <string name="total_played">Total played</string>
+    <string name="reset">Reset</string>
+    <string name="remaining_time">Time left before the warning</string>
     <string name="refresh">Refresh</string>
-    <string name="flush_reminder_notification_hours_only">%1$d hours left before warning message</string>
+    <string name="notification_message">%1$d hours left before the warning</string>
     <string name="menu_settings">Settings</string>
     <plurals name="hours_plurals">
         <item quantity="one">%d hour</item>
         <item quantity="other">%d hours</item>
     </plurals>
     <string name="main_notification_channel_name">Primary</string>
+    <string name="display_duration_pattern">%02dh %02dm</string>
+    <string name="duration_pattern">%02d:%02d</string>
 
     <!-- - - - - - - - - - - - - - - - -
       - Used by Preferences   -
