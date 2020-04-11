@@ -2,13 +2,11 @@ package com.trueapps.volumecontrol.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import com.trueapps.volumecontrol.R
 
 class SharedPreferencesSettingsStorage(private val context: Context) : SettingsStorage {
-    private val sharedPreferences: SharedPreferences
-    init {
-        sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
-    }
+    private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     override val minTimeBeforeWarningInHours: Int
     get() {
@@ -27,7 +25,6 @@ class SharedPreferencesSettingsStorage(private val context: Context) : SettingsS
     }
 
     companion object {
-        private const val SHARED_PREF_NAME = "volume_control_settings"
         private const val SHOW_NOTIFICATIONS_DEFAULT_VALUE = true
         private const val HOURS_BEFORE_WARNING_DEFAULT_VALUE = 3
     }

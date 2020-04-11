@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import com.trueapps.volumecontrol.R
 import com.trueapps.volumecontrol.VolumeControlApplication
 import com.trueapps.volumecontrol.common.preferences.NumberPickerPreference
@@ -19,27 +20,35 @@ class SettingsFragment
     Preference.OnPreferenceChangeListener {
 
     private lateinit var notificationsService: NotificationsScheduler
+    private lateinit var settingsStorage: SettingsStorage
+    private var showNotificationsTogglePref: SwitchPreferenceCompat? = null
+    private var hoursBeforeWarningPref: NumberPickerPreference? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         notificationsService = VolumeControlApplication.Instance.dependenciesProvider.notificationsScheduler
+        settingsStorage = VolumeControlApplication.Instance.dependenciesProvider.preferencesStorage
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs)
+
+        showNotificationsTogglePref = findPreference<SwitchPreferenceCompat>(getString(R.string.prefs_show_notifications_key))?.apply {
+            onPreferenceChangeListener = this@SettingsFragment
+        }
+        hoursBeforeWarningPref = findPreference(getString(R.string.prefs_hours_left_before_warning_key))
+        updateHoursBeforeWarningView()
     }
 
     override fun onStart() {
         super.onStart()
-        preferenceScreen.sharedPreferences
-                .registerOnSharedPreferenceChangeListener(this)
+        preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onStop() {
         super.onStop()
-        preferenceScreen.sharedPreferences
-                .unregisterOnSharedPreferenceChangeListener(this)
+        preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
@@ -64,16 +73,7 @@ class SettingsFragment
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        val notificationPrefKey = getString(R.string.prefs_show_notifications_key)
-        if (key == notificationPrefKey) {
-            setNotificationSettingsEnabled(sharedPreferences.getBoolean(notificationPrefKey, false))
-        }
-    }
-
-    private fun setNotificationSettingsEnabled(enabled: Boolean) {
-        preferenceScreen.findPreference<NumberPickerPreference>(getString(R.string.prefs_hours_left_before_warning_key))?.apply {
-            isEnabled = enabled
-        }
+        updateHoursBeforeWarningView()
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
@@ -86,5 +86,12 @@ class SettingsFragment
         }
 
         return true
+    }
+
+    private fun updateHoursBeforeWarningView() {
+        hoursBeforeWarningPref?.apply {
+            isEnabled = settingsStorage.showNotifications
+            summary = settingsStorage.minTimeBeforeWarningInHours.toString()
+        }
     }
 }

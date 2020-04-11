@@ -5,8 +5,8 @@
     android:layout_height="match_parent">
 
     <SwitchPreferenceCompat
-        android:defaultValue="@bool/show_notifications_by_default_value"
         android:key="@string/prefs_show_notifications_key"
+        android:defaultValue="@bool/show_notifications_by_default_value"
         android:summaryOff="@string/pref_enable_notifications_false"
         android:summaryOn="@string/pref_enable_notifications_true"
         android:title="@string/prefs_show_notifications_title" />
