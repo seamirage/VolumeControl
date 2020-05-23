@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Volume Control</string>
     <string name="reset">Reset</string>
+    <string name="ok">OK</string>
     <string name="remaining_time">Time left before the warning</string>
     <string name="refresh">Refresh</string>
-    <string name="notification_message">%1$d hours left before the warning</string>
+    <string name="notification_message">Less than %1$d hours left before the volume warning</string>
     <string name="menu_settings">Settings</string>
     <plurals name="hours_plurals">
         <item quantity="one">%d hour</item>
@@ -12,7 +13,10 @@
     <string name="main_notification_channel_name">Primary</string>
     <string name="display_duration_pattern">%02dh %02dm</string>
     <string name="duration_pattern">%02d:%02d</string>
-
+    <string name="no_permission">Permission required</string>
+    <string name="attention">Attention</string>
+    <string name="grant_permission_message">Use adb to grant it:\n\n>adb shell pm grant com.trueapps.volumecontrol android.permission.WRITE_SECURE_SETTINGS</string>
+    <string name="remind_to_reboot_message">Changes will not take effect until the device reboot. Alternatively you may switch to another user and log in again.</string>
     <!-- - - - - - - - - - - - - - - - -
       - Used by Preferences   -
       - - - - - - - - - - - - - - - - -->

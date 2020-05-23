@@ -17,27 +17,27 @@ import androidx.work.WorkerParameters
 import com.trueapps.volumecontrol.MainActivity
 import com.trueapps.volumecontrol.R
 import com.trueapps.volumecontrol.VolumeControlApplication
-import com.trueapps.volumecontrol.VolumeControlSettingsService
+import com.trueapps.volumecontrol.SecureSettingsManager
 import com.trueapps.volumecontrol.settings.SettingsStorage
 import java.util.concurrent.TimeUnit
 
 class NotificationsWorker(private val appContext: Context, workerParams: WorkerParameters)
     : Worker(appContext, workerParams) {
     //TODO:DI
-    private val volumeControlService: VolumeControlSettingsService = VolumeControlSettingsService()
+    private val secureSettings: SecureSettingsManager = SecureSettingsManager()
     private val settingsStorage: SettingsStorage = VolumeControlApplication.Instance.dependenciesProvider.preferencesStorage
-    private val VOLUME_CONTROL_NOTIFICATION_CHANNEL_ID = appContext.getString(R.string.notifications_channel_main)
+    private val notificationChannelId = appContext.getString(R.string.notifications_channel_main)
 
     override fun doWork(): Result {
         try {
             Log.d(TAG, "Started reminder check.")
-            val unsafeMilliseconds = volumeControlService.readUnsafeMilliseconds(appContext.contentResolver)
-            val remainingMilliseconds = volumeControlService.unsafeVolumeMusicActiveMsMax - unsafeMilliseconds
+            val unsafeMilliseconds = secureSettings.readUnsafeMilliseconds(appContext.contentResolver)
+            val remainingMilliseconds = secureSettings.unsafeVolumeMusicActiveMsMax - unsafeMilliseconds
             val millisecondsBeforeWarningSetting = millisecondsBeforeWarning()
-            //TODO: if unsafe == 0 then show notification
-            if (remainingMilliseconds <= millisecondsBeforeWarningSetting) {
+            // When unsafeMilliseconds == 0 it means that safe listening is in "unconfirmed" state
+            if (remainingMilliseconds <= millisecondsBeforeWarningSetting || unsafeMilliseconds == 0) {
                 Log.d(TAG, "Min distance is reached, notification will be sent.")
-                showNotification(TimeUnit.MILLISECONDS.toHours(remainingMilliseconds.toLong()))
+                showNotification(TimeUnit.MILLISECONDS.toHours(remainingMilliseconds.toLong()) + 1)
             }
         } catch (e: SettingNotFoundException) {
             Log.e(TAG, "Error at starting job: ", e)
@@ -58,21 +58,21 @@ class NotificationsWorker(private val appContext: Context, workerParams: WorkerP
     }
 
     private fun buildNotification(hoursLeft: Long): Notification? {
-        return NotificationCompat.Builder(appContext, VOLUME_CONTROL_NOTIFICATION_CHANNEL_ID)
+        return NotificationCompat.Builder(appContext, notificationChannelId)
                 .setSmallIcon(R.drawable.icon_warning)
                 .setContentTitle(appContext.getString(R.string.app_name))
                 .setContentText(appContext.getString(R.string.notification_message, hoursLeft))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
                 .setContentIntent(makeOpenAppIntent(appContext))
-                .setChannelId(VOLUME_CONTROL_NOTIFICATION_CHANNEL_ID)
+                .setChannelId(notificationChannelId)
                 .build()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(notificationManager: NotificationManager) {
         val notificationChannel = NotificationChannel(
-                VOLUME_CONTROL_NOTIFICATION_CHANNEL_ID,
+                notificationChannelId,
                 appContext.getString(R.string.main_notification_channel_name),
                 NotificationManager.IMPORTANCE_DEFAULT
         )
@@ -90,9 +90,9 @@ class NotificationsWorker(private val appContext: Context, workerParams: WorkerP
         )
     }
 
-    private fun millisecondsBeforeWarning(): Int {
+    private fun millisecondsBeforeWarning(): Long {
             val hoursBeforeWarning = settingsStorage.minTimeBeforeWarningInHours
-            return hoursBeforeWarning * 60 * 60 * 1000
+            return TimeUnit.HOURS.toMillis(hoursBeforeWarning.toLong())
         }
 
     companion object {

@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.provider.Settings
 import android.provider.Settings.SettingNotFoundException
 
-class VolumeControlSettingsService {
+class SecureSettingsManager {
 
     val unsafeVolumeMusicActiveMsMax = UNSAFE_VOLUME_MUSIC_ACTIVE_MS_MAX
 
