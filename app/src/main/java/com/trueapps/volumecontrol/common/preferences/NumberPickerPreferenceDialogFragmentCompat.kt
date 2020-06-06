@@ -14,15 +14,23 @@ class NumberPickerPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompa
         super.onBindDialogView(view)
 
         numberPicker = view.findViewById<NumberPicker>(R.id.np_settings_number_picker)
-        numberPicker.apply {
-            //TODO: '!!'
-            descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
-            minValue = arguments!!.getInt(MIN_VALUE_KEY, 1)
-            maxValue = arguments!!.getInt(MAX_VALUE_KEY, 1)
-            (preference as? NumberPickerPreference)?.let {
-                numberPicker.value = it.currentValue
-            }
+                .apply {
+                    descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
+
+                    arguments?.let { args ->
+                        if (args.containsKey(MIN_VALUE_KEY)) {
+                            minValue = args.getInt(MIN_VALUE_KEY)
+                        }
+                        if (args.containsKey(MAX_VALUE_KEY)) {
+                            maxValue = args.getInt(MAX_VALUE_KEY)
+                        }
+                    }
+                }
+
+        (preference as? NumberPickerPreference)?.let { pref ->
+            numberPicker.value = pref.currentValue
         }
+
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {

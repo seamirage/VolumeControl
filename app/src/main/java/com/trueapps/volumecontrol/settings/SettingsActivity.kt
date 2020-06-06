@@ -72,8 +72,8 @@ class SettingsFragment
         if (preference is NumberPickerPreference) {
             dialogFragment = NumberPickerPreferenceDialogFragmentCompat.newInstance(
                     preference.key,
-                    preference.minPreferenceValue,
-                    preference.maxPreferenceValue
+                    preference.minPreferenceValue ?: 1,
+                    preference.maxPreferenceValue ?: 1
             )
         }
 

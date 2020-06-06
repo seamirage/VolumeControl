@@ -2,17 +2,16 @@ package com.trueapps.volumecontrol.notifications
 
 import android.content.Context
 import android.util.Log
-import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.trueapps.volumecontrol.VolumeControlApplication
 import java.util.concurrent.TimeUnit
 
 class NotificationsScheduler(private val context: Context) {
 
     fun enableNotifications() {
-        //TODO: min value
-        val periodHours:Long = 2
+        val periodHours:Long = VolumeControlApplication.Settings.checkIntervalHours
 
         val request = PeriodicWorkRequestBuilder<NotificationsWorker>(periodHours, TimeUnit.HOURS)
                 .addTag(REMINDER_SERVICE_TAG)

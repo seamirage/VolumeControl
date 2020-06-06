@@ -23,6 +23,10 @@ class VolumeControlApplication : Application() {
     companion object {
         lateinit var Instance: VolumeControlApplication
     }
+
+    object Settings {
+        const val checkIntervalHours:Long = 2
+    }
 }
 
 class DependenciesProvider(appContext: Context) {
