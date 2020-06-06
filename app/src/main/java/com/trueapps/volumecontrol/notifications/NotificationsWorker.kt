@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit
 
 class NotificationsWorker(private val appContext: Context, workerParams: WorkerParameters)
     : Worker(appContext, workerParams) {
-    //TODO:DI
-    private val secureSettings: SecureSettingsManager = SecureSettingsManager()
+
+    private val secureSettings: SecureSettingsManager = VolumeControlApplication.Instance.dependenciesProvider.secureSettingsManager
     private val settingsStorage: SettingsStorage = VolumeControlApplication.Instance.dependenciesProvider.preferencesStorage
     private val notificationChannelId = appContext.getString(R.string.notifications_channel_main)
 

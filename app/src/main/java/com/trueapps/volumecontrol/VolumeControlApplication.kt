@@ -28,4 +28,5 @@ class VolumeControlApplication : Application() {
 class DependenciesProvider(appContext: Context) {
     val notificationsScheduler = NotificationsScheduler(appContext)
     val preferencesStorage = SharedPreferencesSettingsStorage(appContext)
+    val secureSettingsManager = SecureSettingsManager()
 }

@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         tvRemainingTimeDisplay = findViewById(R.id.tv_remaining_time_display)
         tvRemainingTime = findViewById(R.id.tv_remaining_time_small)
         tvMaxDuration = findViewById<TextView>(R.id.tv_max_duration).apply {
-            text = durationToText(secureSettings.unsafeVolumeMusicActiveMsMax, R.string.duration_pattern)
+            text = durationMsToText(secureSettings.unsafeVolumeMusicActiveMsMax, R.string.duration_pattern)
         }
 
         btnReset.setOnClickListener {
@@ -79,8 +79,8 @@ class MainActivity : AppCompatActivity() {
     private fun updateProgressBar() {
         try {
             val remainingTime = secureSettings.unsafeVolumeMusicActiveMsMax - secureSettings.readUnsafeMilliseconds(contentResolver)
-            tvRemainingTimeDisplay.text = durationToText(remainingTime, R.string.display_duration_pattern)
-            tvRemainingTime.text = durationToText(remainingTime, R.string.duration_pattern)
+            tvRemainingTimeDisplay.text = durationMsToText(remainingTime, R.string.display_duration_pattern)
+            tvRemainingTime.text = durationMsToText(remainingTime, R.string.duration_pattern)
             progressCurrent.max = secureSettings.unsafeVolumeMusicActiveMsMax
             progressCurrent.progress = remainingTime
         } catch (e: SettingNotFoundException) {
@@ -105,9 +105,9 @@ class MainActivity : AppCompatActivity() {
                 .show()
     }
 
-    private fun durationToText(duration: Int, patternResId: Int): String {
-        val hours = TimeUnit.MILLISECONDS.toHours(duration.toLong())
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(duration.toLong()) - hours * 60
+    private fun durationMsToText(durationMs: Int, patternResId: Int): String {
+        val hours = TimeUnit.MILLISECONDS.toHours(durationMs.toLong())
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(durationMs.toLong()) - hours * 60
         return String.format(getString(patternResId), hours, minutes)
     }
 
